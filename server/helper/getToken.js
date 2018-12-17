@@ -10,7 +10,7 @@ module.exports = (user) => {
   
       const passwordIsValid = passwordsUtil.compare(user.password, User.password);
       if(! passwordIsValid) reject('Invalid password');
-  
+
       resolve(CreateToken(User._id, User.permissions));
     });
   });

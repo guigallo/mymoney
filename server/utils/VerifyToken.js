@@ -3,10 +3,10 @@ const config = require('../config/config');
 
 function VerifyToken(req, res, next) {
   const token = req.headers['x-access-token'];
-  if(! token) return res.status(403).send({ auth: false, message: 'Nenhum token fornecido.'});
+  if(! token) return res.status(403).send({ auth: false, errors: 'Token not provided.'});
 
   jwt.verify(token, config.secret, function(err, decoded) {
-    if(err) return res.status(500).send({ auth: false, message: 'Falha ao autenticar o token.' });
+    if(err) return res.status(500).send({ auth: false, errors: 'Invalid token.' });
 
     req.user = {
       id: decoded.id,

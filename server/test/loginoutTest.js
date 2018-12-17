@@ -96,7 +96,7 @@ describe('Log in/out', () => {
           res.should.have.status(500);
           res.should.have.property('body');
           res.body.should.have.property('auth').eql(false);
-          res.body.should.have.property('message').eql('Falha ao autenticar o token.');
+          res.body.should.have.property('errors').eql('Invalid token.');
           done();
         });
     });
@@ -108,7 +108,7 @@ describe('Log in/out', () => {
           res.should.have.status(403);
           res.should.have.property('body');
           res.body.should.have.property('auth').eql(false);
-          res.body.should.have.property('message').eql('Nenhum token fornecido.');
+          res.body.should.have.property('errors').eql('Token not provided.');
           done();
         });
     });
@@ -142,7 +142,7 @@ describe('Log in/out', () => {
           res.should.have.status(403);
           res.should.have.property('body');
           res.body.should.have.property('auth').eql(false);
-          res.body.should.have.property('message').eql('Nenhum token fornecido.');
+          res.body.should.have.property('errors').eql('Token not provided.');
           done();
         });
     });
@@ -155,7 +155,7 @@ describe('Log in/out', () => {
           res.should.have.status(500);
           res.should.have.property('body');
           res.body.should.have.property('auth').eql(false);
-          res.body.should.have.property('message').eql('Falha ao autenticar o token.');
+          res.body.should.have.property('errors').eql('Invalid token.');
           done();
         });
     });

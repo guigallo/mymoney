@@ -83,7 +83,7 @@ describe('User routes', () => {
           res.should.have.status(403);
           assert.deepEqual(res.body, {
             auth: false,
-            message: "Nenhum token fornecido."
+            errors: "Token not provided."
           });
           done()
         });
@@ -135,7 +135,7 @@ describe('User routes', () => {
 
           res.should.has.status(403);
           res.body.should.have.property('auth').eql(false);
-          res.body.should.have.property('message').eql('Nenhum token fornecido.');
+          res.body.should.have.property('errors').eql('Token not provided.');
           done();
         })
     });
@@ -283,7 +283,7 @@ describe('User routes', () => {
 
           res.should.has.status(403);
           res.body.should.have.property('auth').eql(false);
-          res.body.should.have.property('message').eql('Nenhum token fornecido.');
+          res.body.should.have.property('errors').eql('Token not provided.');
           done();
         });
     });
@@ -332,7 +332,7 @@ describe('User routes', () => {
           if(err) logger.info(err);
 
           res.should.has.status(403);
-          res.body.should.have.property('message').eql(`Nenhum token fornecido.`);
+          res.body.should.have.property('errors').eql(`Token not provided.`);
           done();
         });
     });
