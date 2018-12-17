@@ -1,20 +1,16 @@
-/**
- * types:
- * income
- * expense
- * transfer
- */
+const typeFactory = require('../utils/typesFactory');
 
 var mongoose = require('mongoose');
 var UserSchema = new mongoose.Schema({
-  //type
-  //value
-  //date
-  //paid
-  //description
-  //category
+  description: String,
+  date: Date,
+  updated: { type: Date, default: Date.now },
+  value: Number,
+  paid: Boolean,
+  type: typeFactory.schemaTrasactionType(),
+  //category  ***
   //account
 });
-mongoose.model('Trasaction', UserSchema);
+module.exports = mongoose.model('Trasaction', UserSchema);
 
-module.exports = mongoose.model('User');
+//module.exports = mongoose.model('Trasaction');
