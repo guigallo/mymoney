@@ -1,6 +1,6 @@
 const env = require('./config/env');
 const Account = require('../models/Account');
-const sample = require('./sample/accountSample');
+const sample = require('./sample/userSample');
 
 let idSample;
 let createToken;
@@ -11,12 +11,12 @@ let noneToken;
 
 describe('Account routes', () => {
   before(done => {
-    sample.createUsers().then(() => {
-      sample.getToken('create').then(token => createToken = token);
-      sample.getToken('read').then(token => readToken = token);
-      sample.getToken('update').then(token => updateToken = token);
-      sample.getToken('delete').then(token => deleteToken = token);
-      sample.getToken('none').then(token => noneToken = token);
+    sample.createUsers('account').then(() => {
+      sample.getToken('account', 'create').then(token => createToken = token);
+      sample.getToken('account', 'read').then(token => readToken = token);
+      sample.getToken('account', 'update').then(token => updateToken = token);
+      sample.getToken('account', 'delete').then(token => deleteToken = token);
+      sample.getToken('account', 'none').then(token => noneToken = token);
       done();
     })
     .catch(err => console.log(err));
