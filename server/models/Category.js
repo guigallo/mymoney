@@ -4,5 +4,3 @@ var UserSchema = new mongoose.Schema({
   updated: { type: Date, default: Date.now },
 });
 module.exports = mongoose.model('Category', UserSchema);
-
-//module.exports = mongoose.model('Category');

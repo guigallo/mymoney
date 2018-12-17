@@ -5,6 +5,6 @@ var UserSchema = new mongoose.Schema({
   password:     { type: String, required: true },
   permissions:  { type: [String], required: true}
 });
-mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', UserSchema);
 
-module.exports = mongoose.model('User');
+//module.exports = mongoose.model('User');

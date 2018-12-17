@@ -1,4 +1,4 @@
-const helper = require('../helper/testHelper');
+const env = require('./config/env');
 const Account = require('../models/Account');
 const sample = require('./sample/accountSample');
 
@@ -33,7 +33,7 @@ describe('Account routes', () => {
    */
   describe('# Create account', () => {
     it('Success to create account', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .post('/accounts')
         .set('x-access-token', createToken)
         .send({
@@ -56,7 +56,7 @@ describe('Account routes', () => {
     });
 
     it('Try to create account with no token', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .post('/accounts')
         .send({
           name: 'Corrente',
@@ -73,7 +73,7 @@ describe('Account routes', () => {
     });
 
     it('Try to create account with no permission', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .post('/accounts')
         .set('x-access-token', noneToken)
         .send({
@@ -91,7 +91,7 @@ describe('Account routes', () => {
     });
 
     it('Fail to create account with no name', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .post('/accounts')
         .set('x-access-token', createToken)
         .send({ value: 101 })
@@ -110,7 +110,7 @@ describe('Account routes', () => {
     });
 
     it('Fail to create account with no value', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .post('/accounts')
         .set('x-access-token', createToken)
         .send({ name: 'Corrente' })
@@ -129,7 +129,7 @@ describe('Account routes', () => {
     });
 
     it('Fail to create account with negative value', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .post('/accounts')
         .set('x-access-token', createToken)
         .send({ name: 'Corrente', value: -101 })
@@ -148,7 +148,7 @@ describe('Account routes', () => {
     });
 
     it('Fail to create account with not number value', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .post('/accounts')
         .set('x-access-token', createToken)
         .send({ name: 'Corrente', value: 'not number' })
@@ -172,7 +172,7 @@ describe('Account routes', () => {
    */
   describe('# Get all accounts', () => {
     it('Success to get all account', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .get('/accounts')
         .set('x-access-token', readToken)
         .end((err, res) => {
@@ -189,7 +189,7 @@ describe('Account routes', () => {
     });
 
     it('Try to get accounts with no token', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .get('/accounts')
         .set('x-access-token', noneToken)
         .end((err, res) => {
@@ -203,7 +203,7 @@ describe('Account routes', () => {
     });
 
     it('Try to get accounts with no permission', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .get('/accounts')
         .end((err, res) => {
           if(err) console.log(err);
@@ -222,7 +222,7 @@ describe('Account routes', () => {
    */
   describe('# Get account by id', () => {
     it('Success to get account', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .get(`/accounts/${idSample}`)
         .set('x-access-token', readToken)
         .end((err, res) => {
@@ -237,7 +237,7 @@ describe('Account routes', () => {
     });
 
     it('Try to get account with no token', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .get(`/accounts/${idSample}`)
         .end((err, res) => {
           if(err) console.log(err);
@@ -250,7 +250,7 @@ describe('Account routes', () => {
     });
 
     it('Try to get account with no permission', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .get(`/accounts/${idSample}`)
         .set('x-access-token', noneToken)
         .end((err, res) => {
@@ -268,7 +268,7 @@ describe('Account routes', () => {
    */
   describe('# Update account by id', () => {
     it('Success to update account', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put(`/accounts/${idSample}`)
         .set('x-access-token', updateToken)
         .send({ name: 'Corrente Updated' })
@@ -282,7 +282,7 @@ describe('Account routes', () => {
     });
 
     it('Try to update account value', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put(`/accounts/${idSample}`)
         .set('x-access-token', updateToken)
         .send({ value: 123 })
@@ -296,7 +296,7 @@ describe('Account routes', () => {
     });
 
     it('Try to update account with no token', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put(`/accounts/${idSample}`)
         .send({ name: 'Corrente Updated' })
         .end((err, res) => {
@@ -309,7 +309,7 @@ describe('Account routes', () => {
     });
 
     it('Try to update account with no permission', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put(`/accounts/${idSample}`)
         .set('x-access-token', noneToken)
         .send({ name: 'Corrente Updated' })
@@ -329,7 +329,7 @@ describe('Account routes', () => {
    */
   describe('# Delete account by id', () => {
     it('Success to delete account', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .del(`/accounts/${idSample}`)
         .set('x-access-token', deleteToken)
         .end((err, res) => {
@@ -342,7 +342,7 @@ describe('Account routes', () => {
     });
 
     it('Try to delete account with no token', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .del(`/accounts/${idSample}`)
         .end((err, res) => {
           if(err) console.log(err);
@@ -354,7 +354,7 @@ describe('Account routes', () => {
     });
 
     it('Try to delete account with no permission', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .del(`/accounts/${idSample}`)
         .set('x-access-token', noneToken)
         .end((err, res) => {

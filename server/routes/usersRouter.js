@@ -1,7 +1,7 @@
+const ROTA = '/users';
 const controller = require('../controllers/userController');
 const VerifyToken = require('../utils/VerifyToken');
 const guard = require('express-jwt-permissions')();
-const ROTA = '/users';
 
 module.exports = function(app) {
   app.get(ROTA, VerifyToken, guard.check('user:read'), controller.getAllUsers);

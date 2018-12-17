@@ -1,10 +1,10 @@
 process.env.NODE_ENV = 'test';
 const chai = require('chai');
 const http = require('chai-http');
-const UserModel = require('../models/User');
-const passwordsUtil = require('../utils/PasswordsUtil');
-const logger = require('../services/logger');
-const getToken = require('./getToken');
+const UserModel = require('../../models/User');
+const passwordsUtil = require('../../utils/PasswordsUtil');
+const logger = require('../../services/logger');
+const getToken = require('../helper/getToken');
 
 chai.use(http);
 
@@ -40,7 +40,7 @@ function getLowUserToken() {
 module.exports = {
   chai,
   should: chai.should,
-  express: require('../index'),
+  express: require('../../index'),
   passwordsUtil,
 
   defaultUser,

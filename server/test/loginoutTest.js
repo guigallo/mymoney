@@ -1,13 +1,13 @@
-const helper = require('../helper/testHelper');
+const env = require('./config/env');
 const User = require('../models/User');
-const should = helper.should();
+const should = env.should();
 
 let testUsers = '';
 let token = '';
 
 describe('Log in/out', () => {
   before(done => {
-    helper.saveDefaultUser()
+    env.saveDefaultUser()
       .then(users => {
         testUsers = users;
         done();
@@ -26,11 +26,11 @@ describe('Log in/out', () => {
    */
   describe('# Log In', () => {
     it('it should log in', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .post('/log/in')
         .send({ 
-          email: helper.defaultUser.email,
-          password: helper.defaultUser.password
+          email: env.defaultUser.email,
+          password: env.defaultUser.password
         })
         .end((err, res) => {
           res.should.have.status(200);
@@ -42,10 +42,10 @@ describe('Log in/out', () => {
     });
 
     it('try to log in with wrong password', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .post('/log/in')
         .send({
-          email: helper.defaultUser.email,
+          email: env.defaultUser.email,
           password: 'wrong123456'
         })
         .end((err, res) => {
@@ -57,7 +57,7 @@ describe('Log in/out', () => {
     });
 
     it('try to log in with no parameters', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .post('/log/in')
         .send({})
         .end((err, res) => {
@@ -75,21 +75,21 @@ describe('Log in/out', () => {
    */
   describe('# Log Me', () => {
     it('get user data with token', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .get('/log/me')
         .set('x-access-token', token)
         .end((err, res) => {
           res.should.have.status(200);
           res.should.have.property('body');
           res.body.should.have.property('_id').to.equal(testUsers[0]._id.toString());
-          res.body.should.have.property('name').eql(helper.defaultUser.name);
-          res.body.should.have.property('email').eql(helper.defaultUser.email);
+          res.body.should.have.property('name').eql(env.defaultUser.name);
+          res.body.should.have.property('email').eql(env.defaultUser.email);
           done();
         });
     });
 
     it('try to get data with invalid token', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .get('/log/me')
         .set('x-access-token', token + 12312)
         .end((err, res) => {
@@ -102,7 +102,7 @@ describe('Log in/out', () => {
     });
 
     it('try to get date with no token', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .get('/log/me')
         .end((err, res) => {
           res.should.have.status(403);
@@ -119,7 +119,7 @@ describe('Log in/out', () => {
    */
   describe('# Log Out', () => {
     it('log out an authenticated user', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .get('/log/out')
         .end((err, res) => {
           res.should.have.status(200);
@@ -136,7 +136,7 @@ describe('Log in/out', () => {
    */
   describe('# Change password', () => {
     it('changing password with no token', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put('/log/newpassword')
         .end((err, res) => {
           res.should.have.status(403);
@@ -148,7 +148,7 @@ describe('Log in/out', () => {
     });
 
     it('changing password with invalid token', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put('/log/newpassword')
         .set('x-access-token', token + 12312)
         .end((err, res) => {
@@ -161,10 +161,10 @@ describe('Log in/out', () => {
     });
 
     it('changing password without sent current password', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put('/log/newpassword')
         .set('x-access-token', token)
-        .send({ newPassword: helper.defaultUser.newPassword })
+        .send({ newPassword: env.defaultUser.newPassword })
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.have.property('message').eql('Envie a senha atual e nova para trocar a senha.');
@@ -173,10 +173,10 @@ describe('Log in/out', () => {
     });
 
     it('changing password whithout sent new password', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put('/log/newpassword')
         .set('x-access-token', token)
-        .send({ password: helper.defaultUser.password })
+        .send({ password: env.defaultUser.password })
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.have.property('message').eql('Envie a senha atual e nova para trocar a senha.');
@@ -185,12 +185,12 @@ describe('Log in/out', () => {
     });
 
     it('changing password with current and new passwords equals', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put('/log/newpassword')
         .set('x-access-token', token)
         .send({
-          password: helper.defaultUser.newPassword,
-          newPassword: helper.defaultUser.newPassword
+          password: env.defaultUser.newPassword,
+          newPassword: env.defaultUser.newPassword
         })
         .end((err, res) => {
           res.should.have.status(400);
@@ -200,12 +200,12 @@ describe('Log in/out', () => {
     });
 
     it('changing password with invalid current password', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put('/log/newpassword')
         .set('x-access-token', token)
         .send({
           password: 'senhaErrada',
-          newPassword: helper.defaultUser.newPassword
+          newPassword: env.defaultUser.newPassword
         })
         .end((err, res) => {
           res.should.have.status(403);
@@ -215,12 +215,12 @@ describe('Log in/out', () => {
     });
 
     it('it should change password', done => {
-      helper.chai.request(helper.express)
+      env.chai.request(env.express)
         .put('/log/newpassword')
         .set('x-access-token', token)
         .send({
-          password: helper.defaultUser.password,
-          newPassword: helper.defaultUser.newPassword
+          password: env.defaultUser.password,
+          newPassword: env.defaultUser.newPassword
         })
         .end((err, res) => {
           res.should.have.status(200);

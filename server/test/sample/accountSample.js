@@ -1,6 +1,6 @@
 const User = require('../../models/User');
 const passwordsUtil = require('../../utils/PasswordsUtil');
-const getToken = require('../../helper/getToken');
+const getToken = require('../helper/getToken');
 
 function createUser(permission, level) {
   return new User({

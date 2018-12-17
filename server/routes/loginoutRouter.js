@@ -1,6 +1,6 @@
+const ROTA = '/log';
 const controller = require('../controllers/loginoutController');
 const VerifyToken = require('../utils/VerifyToken');
-const ROTA = '/log';
 
 module.exports = function(app) {
   app.post(`${ROTA}/in`, controller.login);

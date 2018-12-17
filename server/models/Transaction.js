@@ -12,5 +12,3 @@ var UserSchema = new mongoose.Schema({
   //account
 });
 module.exports = mongoose.model('Trasaction', UserSchema);
-
-//module.exports = mongoose.model('Trasaction');

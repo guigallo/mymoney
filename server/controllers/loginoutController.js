@@ -1,6 +1,6 @@
 const PasswordsUtil = require('../utils/PasswordsUtil');
 const userModel = require('../models/User');
-const validaRequest = require('../validate/user');
+const validaRequest = require('../middlewares/validateUser');
 const CreateToken = require('../utils/CreateToken');
 const logger = require('../services/logger');
 
