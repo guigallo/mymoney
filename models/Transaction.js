@@ -1,4 +1,4 @@
-const typeFactory = require('../utils/typesFactory');
+const typeFactory = require('../data/typesFactory');
 
 var mongoose = require('mongoose');
 var UserSchema = new mongoose.Schema({

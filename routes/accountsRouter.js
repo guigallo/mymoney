@@ -2,7 +2,7 @@ const ROTA = '/accounts';
 const validateAccount = require('../middlewares/validateAccount');
 const guard = require('express-jwt-permissions')();
 const handlPermissionDenied = require('../middlewares/handlePermissionDenied');
-const VerifyToken = require('../utils/VerifyToken');
+const VerifyToken = require('../middlewares/VerifyToken');
 const controller = require('../controllers/accountsController');
 
 module.exports = (app) =>

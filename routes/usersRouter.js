@@ -1,6 +1,6 @@
 const ROTA = '/users';
 const controller = require('../controllers/userController');
-const VerifyToken = require('../utils/VerifyToken');
+const VerifyToken = require('../middlewares/VerifyToken');
 const guard = require('express-jwt-permissions')();
 
 module.exports = function(app) {
