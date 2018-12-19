@@ -1,6 +1,6 @@
 const PasswordsUtil = require('../utils/PasswordsUtil');
 const userModel = require('../models/User');
-const validaRequest = require('../middlewares/validateUser');
+const validaRequest = require('../middlewares/validateUser'); // deprecated
 const CreateToken = require('../utils/CreateToken');
 const logger = require('../services/logger');
 

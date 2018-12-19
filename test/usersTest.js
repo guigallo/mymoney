@@ -45,7 +45,7 @@ describe('User routes', () => {
           if(err) logger.info(err);
 
           res.should.have.status(200);
-          assert.deepEqual(res.body, [{
+          assert.deepEqual(res.body.result, [{
             id: testUsers[0]._id.toString(),
             name: 'Test user',
             email: 'mocha@test.com',
@@ -67,8 +67,8 @@ describe('User routes', () => {
         .end((err, res) => {
           if(err) logger.info(err);
 
-          res.should.have.status(500);
-          assert.deepEqual(res.body, { message: 'Internal error.' });
+          res.should.have.status(403);
+          assert.deepEqual(res.body, { errors: 'User has no permission' });
           
           done();
         })
@@ -120,8 +120,8 @@ describe('User routes', () => {
         .end((err, res) => {
           if(err) logger.info(err);
 
-          res.should.has.status(500);
-          assert.deepEqual(res.body, { message: 'Internal error.' });
+          res.should.has.status(403);
+          assert.deepEqual(res.body, { errors: 'User has no permission' });
           done();
         })
     });
@@ -148,7 +148,7 @@ describe('User routes', () => {
           if(err) logger.info(err);
 
           res.should.has.status(404);
-          assert.deepEqual(res.body, { message: 'Nenhum usuário encontrado' });
+          assert.deepEqual(res.body, { errors: 'User not found' });
           done();
         });
     });

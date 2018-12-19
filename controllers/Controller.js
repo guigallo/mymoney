@@ -17,7 +17,7 @@ class Controller {
     logger.info(`${this.name}${newid}${action} by ${this.request.user.id}`);
   }
 
-  create() {
+  create(callback) {
     if(! validate(this.request, this.response)) return;
 
     let model = {};
@@ -30,25 +30,28 @@ class Controller {
       if(errors) return this.response.status(500).json({ errors });
 
       this._log('created');
+      if(this.name === 'User') return callback(created);
       this.response.status(201).json({ result: created });
     });
   }
 
-  read() {
+  read(callback) {
     this.Model.find({}, (err, read) => {
       if(err) return this.response.status(500).json({ errors: `Error to get ${this.name}` });
       if(! read) return this.response.status(404).json({ errors: 'Nothing to return'});
 
       this._log('read');
+      if(this.name === 'User') return callback(read);
       this.response.status(200).json({ result: read });
     });
   }
 
-  readById() {
+  readById(callback) {
     this.Model.findById(this.request.params.id, (err, readById) => {
       if(! readById) return this.response.status(404).json({ errors: `${this.name} not found` });
 
       this._log('read');
+      if(this.name === 'User') return callback(readById);
       this.response.status(200).json({ result: readById });
     });
   }
