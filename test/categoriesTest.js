@@ -41,9 +41,9 @@ describe('Category routes', () => {
           if(err) console.log(err);
 
           res.should.has.status(201);
-          res.body.should.have.property('category');
+          res.body.should.have.property('result');
 
-          const createdCategory = res.body.category;
+          const createdCategory = res.body.result;
 
           idSample = createdCategory._id;
           createdCategory.should.have.property('name').eql('Category');
@@ -112,9 +112,9 @@ describe('Category routes', () => {
           if(err) console.log(err);
 
           res.should.has.status(200);
-          res.body.should.have.property('categories');
+          res.body.should.have.property('result');
 
-          const createdCategory = res.body.categories[0];
+          const createdCategory = res.body.result[0];
           createdCategory.should.have.property('name').eql('Category');
           done();
         });
@@ -161,8 +161,8 @@ describe('Category routes', () => {
           if(err) console.log(err);
 
           res.should.has.status(200);
-          res.body.should.have.property('category');
-          res.body.category.should.have.property('name').eql('Category');
+          res.body.should.have.property('result');
+          res.body.result.should.have.property('name').eql('Category');
           done();
         });
     });

@@ -44,9 +44,9 @@ describe('Account routes', () => {
           if(err) console.log(err);
 
           res.should.has.status(201);
-          res.body.should.have.property('account');
+          res.body.should.have.property('result');
 
-          const createdAccount = res.body.account;
+          const createdAccount = res.body.result;
 
           idSample = createdAccount._id;
           createdAccount.should.have.property('name').eql('Corrente');
@@ -179,9 +179,9 @@ describe('Account routes', () => {
           if(err) console.log(err);
 
           res.should.has.status(200);
-          res.body.should.have.property('accounts');
+          res.body.should.have.property('result');
 
-          const createdAccount = res.body.accounts[0];
+          const createdAccount = res.body.result[0];
           createdAccount.should.have.property('name').eql('Corrente');
           createdAccount.should.have.property('value').eql(101);
           done();
@@ -229,9 +229,9 @@ describe('Account routes', () => {
           if(err) console.log(err);
 
           res.should.has.status(200);
-          res.body.should.have.property('account');
-          res.body.account.should.have.property('name').eql('Corrente');
-          res.body.account.should.have.property('value').eql(101);
+          res.body.should.have.property('result');
+          res.body.result.should.have.property('name').eql('Corrente');
+          res.body.result.should.have.property('value').eql(101);
           done();
         });
     });
