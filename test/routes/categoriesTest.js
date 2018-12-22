@@ -1,6 +1,7 @@
-const env = require('./config/env');
-const Category = require('../models/Category');
-const sample = require('./sample/userSample');
+const env = require('../config/env');
+const Category = require('../../models/Category');
+const sample = require('../sample/userSample');
+const should = env.should();
 
 let idSample;
 let createToken;
@@ -9,7 +10,7 @@ let updateToken;
 let deleteToken;
 let noneToken;
 
-describe('Category routes', () => {
+module.exports = describe('Category routes', () => {
   before(done => {
     sample.createUsers('category').then(() => {
       sample.getToken('category', 'create').then(token => createToken = token);

@@ -1,11 +1,11 @@
-const env = require('./config/env');
-const User = require('../models/User');
+const env = require('../config/env');
+const User = require('../../models/User');
 const should = env.should();
 
 let testUsers = '';
 let token = '';
 
-describe('Log in/out', () => {
+module.exports = describe('Log in/out', () => {
   before(done => {
     env.saveDefaultUser()
       .then(users => {
