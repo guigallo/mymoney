@@ -1,15 +1,17 @@
 const Controller = require('./Controller');
 const { check } = require('express-validator/check');
 const Model = require('../models/User');
+const CreateToken = require('../utils/CreateToken');
 
 class UserController extends Controller {
   constructor(req, res) {
-    super(req, res, 'User', Model, ['name']);
+    super(req, res, 'User', Model, ['name', 'email', 'password']);
   }
 
   create() {
-    super.create(login => {
-      
+    super.create((res, created) => {
+      const token = CreateToken(created._id, created.permissions);
+      res.status(201).json({ auth: true, token });
     });
   }
   
@@ -36,6 +38,14 @@ class UserController extends Controller {
         email: user.email,
       })
     );
+  }
+
+  update() {
+    const body = this.request.body
+    if(body.hasOwnProperty('password') || body.hasOwnProperty('newPassword'))
+      return this.response.status(400).json({ message: 'To change password, use the path "/user/newpassword"' })
+
+    super.update();
   }
 }
 

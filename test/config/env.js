@@ -13,7 +13,7 @@ const defaultUser = {
   email: 'mocha@test.com',
   password: 'test123456',
   newPassword: 'new123456',
-  permissions: ['user:read', 'user:write']
+  permissions: ['user:create', 'user:read', 'user:update', 'user:delete']
 },
 lowPermissionUser = {
   name: 'Low permission user',

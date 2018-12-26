@@ -14,7 +14,10 @@ class Controller {
 
   _log(action, newId = undefined) {
     let newid = (newId) ? ` ${newId} ` : ' ';
-    logger.info(`${this.name}${newid}${action} by ${this.request.user.id}`);
+    let by = '';
+    if(this.request.user)
+      by = ` by ${this.request.user.id}`
+    logger.info(`${this.name}${newid}${action}${by}`);
   }
 
   create(callback) {
@@ -27,10 +30,11 @@ class Controller {
     });
 
     this.Model.create(model, (errors, created) => {
+      
       if(errors) return this.response.status(500).json({ errors });
 
       this._log('created');
-      if(this.name === 'User') return callback(created);
+      if(this.name === 'User') return callback(this.response, created);
       this.response.status(201).json({ result: created });
     });
   }
@@ -66,11 +70,12 @@ class Controller {
   }
 
   delete() {
-    this.Model.findByIdAndDelete(this.request.params.id, err => {
+    const id = this.request.params.id
+    this.Model.findByIdAndDelete(id, err => {
       if(err) return this.response.status(500).json({ errors: `Error to delete ${this.name}` });
 
-      this._log('deleted', this.request.params.id);
-      this.response.status(201).json({ message: `${this.name} deleted successfully` });
+      this._log('deleted', id);
+      this.response.status(201).json({ message: `${this.name} id: ${id} deleted successfully` });
     });
   }
 }

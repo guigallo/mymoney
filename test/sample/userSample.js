@@ -21,14 +21,15 @@ function generateToken(permission, level) {
 }
 
 module.exports = {
-  createUsers(permission) {
-    const users = [
-      userFactory(permission, 'create'),
-      userFactory(permission, 'read'),
-      userFactory(permission, 'update'),
-      userFactory(permission, 'delete'),
-      userFactory(permission, 'none'),
-    ];
+  createUsers(permissions) {
+    const users = [];
+    permissions.forEach(permission =>{
+      users.push(userFactory(permission, 'create'));
+      users.push(userFactory(permission, 'read'));
+      users.push(userFactory(permission, 'update'));
+      users.push(userFactory(permission, 'delete'));
+      users.push(userFactory(permission, 'none'));
+    });
 
     return new Promise((resolve, reject) => {
       User.insertMany(users, (err, saved) => {

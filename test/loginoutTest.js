@@ -1,5 +1,5 @@
-const env = require('../config/env');
-const User = require('../../models/User');
+const env = require('./config/env');
+const User = require('../models/User');
 const should = env.should();
 
 let testUsers = '';
