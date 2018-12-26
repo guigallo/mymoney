@@ -1,7 +1,12 @@
 const env = require('../config/env');
 const should = env.should();
+const stringHelper = require('../../helper/stringHelper');
 
 let idSample;
+
+function checkErrors(err) {
+  if(err) throw new Error(err);
+}
 
 class Restful {
   constructor(route, properties, tokens) {
@@ -16,6 +21,7 @@ class Restful {
     this.properties = properties;
   }
 
+  //not obj
   _request() {
     return env.chai.request(env.express);
   }
@@ -24,24 +30,27 @@ class Restful {
     return this._request().post(this.path);
   }
 
-  _getDefaultValues() {
+  _getDefaultValues(props = this.properties) {
     let values = {};
-    this.properties.forEach(prop =>
-      values[prop.property] = prop.defaultValue
+    props.forEach(prop =>
+      values[prop.name] = prop.defaultValue
     );
     return values;
   }
 
-  _shoulHasStatus(res, status) {
+  //not obj
+  _shouldHasStatus(res, status) {
     res.should.has.status(status);
   }
 
+  //not obj
   _shouldHaveProperties(object, properties) {
     properties.forEach(prop => 
-      object.should.have.property(prop.property).eql(prop.defaultValue)
+      object.should.have.property(prop.name).eql(prop.defaultValue)
     );
   }
 
+  //not obj
   _shouldHasObj(res, object) {
     res.body.should.have.property(object);
   }
@@ -53,10 +62,10 @@ class Restful {
         .set('x-access-token', this.tokens.create)
         .send(this._getDefaultValues())
         .end((err, res) => {
-          if(err) throw new Error(err);
+          checkErrors(err);
 
           // create response class
-          this._shoulHasStatus(res, 201);
+          this._shouldHasStatus(res, 201);
           this._shouldHasObj(res, 'result')
           this._shouldHaveProperties(res.body.result, this.properties)
           idSample = res.body.result._id;
@@ -69,17 +78,120 @@ class Restful {
         this._post()
         .send(this._getDefaultValues())
         .end((err, res) => {
-          if(err) throw new Error(err);
+          checkErrors(err);
 
-          this._shoulHasStatus(res, 403);
+          this._shouldHasStatus(res, 403);
           this._shouldHaveProperties(res.body, [
-            {property: 'auth', defaultValue: false},
-            {property: 'errors', defaultValue: 'Token not provided.'}
+            {name: 'auth', defaultValue: false},
+            {name: 'errors', defaultValue: 'Token not provided.'}
           ]);
           
           done();
         });
       });
+
+      it(`Try to create ${this.name} with no permission`, done => {
+        this._post()
+        .set('x-access-token', this.tokens.none)
+        .send(this._getDefaultValues())
+        .end((err, res) => {
+          checkErrors(err);
+
+          this._shouldHasStatus(res, 403);
+          this._shouldHaveProperties(res.body, [
+            { name: 'errors', defaultValue: 'User has no permission' }
+          ]);
+
+          done();
+        });
+      });
+
+      describe(`Try to create ${this.name} with no required values`, () => {
+        this.properties.forEach(property => {
+          if(property.required) {
+            it(`Try to create ${this.name} with no ${property.name} property`, propDone => {
+              let propertiesToPost = this.properties.filter(prop => {
+                if(prop !== property) return true
+              });
+
+              this._post()
+                .set('x-access-token', this.tokens.create)
+                .send(this._getDefaultValues(propertiesToPost))
+                .end((err, res) => {
+                  checkErrors(err);
+
+                  this._shouldHasStatus(res, 422);
+                  res.body.should.have.property('errors');
+                  //console.log(res.body);
+                  
+                  const errors = res.body.errors[0];
+                  errors.should.have.property('location').eql('body');
+                  errors.should.have.property('param').eql(property.name);
+                  errors.should.have.property('msg').eql(`${stringHelper.capitalize(property.name)} is required`);
+                  
+                  propDone();
+                });
+
+            });
+          }
+        });
+        //done();
+      });
+
+    });
+
+    describe(`### Get all ${this.name}`, () => {
+      it(`Success to get all ${this.name}`, done => {
+        this._request()
+          .get(this.path)
+          .set('x-access-token', this.tokens.read)
+          .end((err, res) => {
+            checkErrors(err);
+  
+            this._shouldHasStatus(res, 200);
+            this._shouldHasObj(res, 'result');
+  
+            const createdAccount = res.body.result[0];
+            this.properties.forEach(property => {
+              createdAccount.should.have.property(property.name).eql(property.defaultValue);
+            });
+
+            done();
+          });
+      });
+      
+      it(`Try to get ${this.name} with no token`, done => {
+        this._request()
+          .get(this.path)
+          .set('x-access-token', this.tokens.none)
+          .end((err, res) => {
+            checkErrors(err);
+  
+            this._shouldHasStatus(res, 403);
+            this._shouldHaveProperties(res.body, [
+              { name: 'errors', defaultValue: 'User has no permission' }
+            ]);
+
+            done();
+          });
+      });
+
+      it(`Try to get ${this.name} with no permission`, done => {
+        env.chai.request(env.express)
+          .get('/accounts')
+          .end((err, res) => {
+            checkErrors(err);
+  
+            this._shouldHasStatus(res, 403);
+            this._shouldHaveProperties(res.body, [
+              {name: 'auth', defaultValue: false},
+              {name: 'errors', defaultValue: 'Token not provided.'}
+            ]);
+  
+            done();
+          });
+      });
+
     });
   }
 }
@@ -91,102 +203,6 @@ function defaultTest (tokens) {
    * Test create account
    */
   describe('### Create account', () => {
-    it('Success to create account', done => { //done
-      env.chai.request(env.express)
-        .post('/accounts')
-        .set('x-access-token', tokens.create)
-        .send({
-          name: 'Corrente',
-          value: 101,
-        })
-        .end((err, res) => {
-          if(err) console.log(err);
-
-          res.should.has.status(201);
-          res.body.should.have.property('result');
-
-          const createdAccount = res.body.result;
-
-          idSample = createdAccount._id;
-          createdAccount.should.have.property('name').eql('Corrente');
-          createdAccount.should.have.property('value').eql(101);
-          done();
-        });
-    });
-
-    it('Try to create account with no token', done => { //done
-      env.chai.request(env.express)
-        .post('/accounts')
-        .send({
-          name: 'Corrente',
-          value: 101,
-        })
-        .end((err, res) => {
-          if(err) console.log(err);
-
-          res.should.has.status(403);
-          res.body.should.have.property('auth').eql(false);
-          res.body.should.have.property('errors').eql('Token not provided.');
-          done();
-        });
-    });
-
-    it('Try to create account with no permission', done => {
-      env.chai.request(env.express)
-        .post('/accounts')
-        .set('x-access-token', tokens.none)
-        .send({
-          name: 'Corrente',
-          value: 101,
-        })
-        .end((err, res) => {
-          if(err) console.log(err);
-
-          res.should.has.status(403);
-          res.body.should.have.property('errors').eql('User has no permission');
-
-          done();
-        });
-    });
-
-    it('Fail to create account with no name', done => {
-      env.chai.request(env.express)
-        .post('/accounts')
-        .set('x-access-token', tokens.create)
-        .send({ value: 101 })
-        .end((err, res) => {
-          if(err) logger.info(err);
-          
-          res.should.has.status(422);
-          res.body.should.have.property('errors');
-
-          const errors = res.body.errors[0];
-          errors.should.have.property('location').eql('body');
-          errors.should.have.property('param').eql('name');
-          errors.should.have.property('msg').eql('Name is required');
-          done();
-        });
-    });
-
-    it('Fail to create account with no value', done => {
-      env.chai.request(env.express)
-        .post('/accounts')
-        .set('x-access-token', tokens.create)
-        .send({ name: 'Corrente' })
-        .end((err, res) => {
-          if(err) logger.info(err);
-          
-          res.should.has.status(422);
-          res.body.should.have.property('errors');
-
-          const errors = res.body.errors[0];
-          errors.should.have.property('location').eql('body');
-          errors.should.have.property('param').eql('value');
-          errors.should.have.property('msg').eql('Value is required');
-          done();
-        });
-    });
-
     it('Fail to create account with negative value', done => {
       env.chai.request(env.express)
         .post('/accounts')
@@ -221,56 +237,6 @@ function defaultTest (tokens) {
           errors.should.have.property('location').eql('body');
           errors.should.have.property('param').eql('value');
           errors.should.have.property('msg').eql('Value must be numeric');
-          done();
-        });
-    });
-  });
-
-  /**
-   * Test get all accounts
-   */
-  describe('### Get all accounts', () => {
-    it('Success to get all account', done => {
-      env.chai.request(env.express)
-        .get('/accounts')
-        .set('x-access-token', tokens.read)
-        .end((err, res) => {
-          if(err) console.log(err);
-
-          res.should.has.status(200);
-          res.body.should.have.property('result');
-
-          const createdAccount = res.body.result[0];
-          createdAccount.should.have.property('name').eql('Corrente');
-          createdAccount.should.have.property('value').eql(101);
-          done();
-        });
-    });
-
-    it('Try to get accounts with no token', done => {
-      env.chai.request(env.express)
-        .get('/accounts')
-        .set('x-access-token', tokens.none)
-        .end((err, res) => {
-          if(err) console.log(err);
-
-          res.should.has.status(403);
-          res.body.should.have.property('errors').eql('User has no permission');
-
-          done();
-        });
-    });
-
-    it('Try to get accounts with no permission', done => {
-      env.chai.request(env.express)
-        .get('/accounts')
-        .end((err, res) => {
-          if(err) console.log(err);
-
-          res.should.has.status(403);
-          res.body.should.have.property('auth').eql(false);
-          res.body.should.have.property('errors').eql('Token not provided.');
-
           done();
         });
     });

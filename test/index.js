@@ -33,8 +33,8 @@ describe('# Testing mymoney API', () => {
         .then(tokens => {
           const restfulAcc = new Restful({
             name: 'account', path: '/accounts'}, [
-              { property: 'name', defaultValue: 'Corrente' },
-              { property: 'value', defaultValue: 102 }
+              { name: 'name', defaultValue: 'Corrente', required: true },
+              { name: 'value', defaultValue: 102, required: true }
             ], tokens);
           restfulAcc.create();
         })
