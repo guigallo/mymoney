@@ -1,28 +1,45 @@
-const sample = require('./sample/userSample');
+const users = require('./sample/userSample');
+const accounts = require('./sample/accountSample');
+const categories = require('./sample/categorySample');
+const expenses = require('./sample/expenseSample');
 const Restful = require('./routes/Restful');
 //const accountTest = require('./routes/accountsTest');
 //const categoriesTest = require('./routes/categoriesTest');
 //const loginoutTest = require('./routes/loginoutTest');
 
+let accountCreated;
+let categoryCreated;
 
-let users;
+clearDb = () => 
+  new Promise(async resolve => {
+    await users.clear();
+    await accounts.clear();
+    await categories.clear();
+    await expenses.clear();
+
+    resolve();
+  })
 
 describe('# Testing mymoney API', () => {
   before(done => {
-    sample.createUsers(['account', 'category'])
-      .then(() => done())
-      .catch(err => { throw new Error(err) });
+    new Promise(async resolve => {
+      await clearDb();
+      await users.createMany(['account', 'category', 'expense']);
+      accountCreated = await accounts.createOne();
+      categoryCreated = await categories.createOne();
+      resolve(done);
+    }).then(() => done());
   });
 
   after(done => {
-    sample.deleteUsers()
+    clearDb()
       .then(() => done())
       .catch(err => { throw new Error(err) });
   });
 
   describe('## Testing routes', () => {
     it('Restful account routes', done => {
-      sample.getTokens('account')
+      users.getTokens('account')
         .then(tokens => {
           const restfulAcc = new Restful({
             name: 'account', path: '/accounts'}, [
@@ -32,30 +49,37 @@ describe('# Testing mymoney API', () => {
           restfulAcc.test();
         })
         .then(() => done())
-      }
-    );
+    });
 
     it('Restful category routes', done => {
-      sample.getTokens('category')
+      users.getTokens('category')
         .then(tokens => {
-          const restfulAcc = new Restful({
-            name: 'category', path: '/categories'}, [
+          const restfulCat = new Restful(
+            { name: 'category', path: '/categories' }, [
               { name: 'name', defaultValue: 'Categoria', required: true }
             ], tokens);
-          restfulAcc.test();
+            restfulCat.test();
         })
         .then(() => done())
-      }
-    );
+    });
 
-    //it
+    it('Restful expense routes', done => {
+      users.getTokens('expense')
+        .then(tokens => {
+          const restfulExpense = new Restful(
+            { name: 'expense', path: '/expenses' }, [
+              { name: 'account', defaultValue: accountCreated, required: true },
+              { name: 'category', defaultValue: categoryCreated, required: true },
+              { name: 'description', defaultValue: 'Despesa 01', required: true },
+              { name: 'date', defaultValue: Date.now(), required: true },
+              { name: 'value', defaultValue: 15.30, required: true },
+              { name: 'paid', defaultValue: true },
+            ], tokens
+          );
+          restfulExpense.test();
+        })
+        .then(() => done())
+    });
+
   })
 });
-
-
-
-/*
-accountTest;
-categoriesTest;
-loginoutTest;
-*/

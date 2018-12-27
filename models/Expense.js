@@ -1,38 +1,48 @@
 const Transaction = require('../classes/Transaction');
 const mongoose = require('mongoose');
 
+const expenseSchema = [
+  { name: 'paid', type: Boolean }
+]
+
 class Expense extends Transaction {
-  constructor(account, category, description, date, value, paid) {
+  constructor(account, category, description, date, value, paid = false) {
     super('out', account, category, description, date, value);
+
     this.paid = paid;
   }
 
-  _getSchema() {
-    return super._getSchema([
-      { name: 'paid', type: Boolean }
-    ]);
+  static _getSchema() {
+    return super._getSchema(expenseSchema);
   }
 
-  save() {
-    //let Model = 
-    return new Promise(resolve => {
-      mongoose.model('Expense', this._getSchema())
-        .create({
-          account: this.account,
-          category: this.category,
-          description: this.description,
-          date: this.date,
-          value: this.value,
-          paid: this.paid,
-          type: this.type
-        }, (err, saved) => {
-          if(err) throw new Error('Error to create expense');
-  
-          resolve(saved);
-        });
-    });
+  create() {
+    return new Promise((resolve, reject) => model
+      .create({
+        account: this.account,
+        category: this.category,
+        description: this.description,
+        date: this.date,
+        value: this.value,
+        paid: this.paid,
+        type: this.type
+      }, (err, saved) => {
+        if(err) reject('Error to create expense');
+        this.id = saved._id;
+        resolve(saved);
+      })
+    );
   }
+
+  /*
+  update() {
+    return new Promise((resolve, reject) => model
+      .findByIdAndUpdate
+    );
+  }
+  */
 }
-
 module.exports = Expense;
-//module.exports.Model = mongoose.model('Expense', new Expense()._getSchema());
+
+const model = mongoose.model('Expense', Expense._getSchema())
+module.exports.Model = model

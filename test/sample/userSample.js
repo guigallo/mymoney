@@ -21,7 +21,7 @@ function generateToken(permission, level) {
 }
 
 module.exports = {
-  createUsers(permissions) {
+  createMany(permissions) {
     const users = [];
     permissions.forEach(permission =>{
       users.push(userFactory(permission, 'create'));
@@ -67,7 +67,7 @@ module.exports = {
     );
   },
 
-  deleteUsers() {
+  clear() {
     return new Promise(resolve => 
       User.deleteMany({}, () => resolve())
     );
