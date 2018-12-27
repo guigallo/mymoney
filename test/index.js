@@ -24,7 +24,7 @@ describe('# Testing mymoney API', () => {
   before(done => {
     new Promise(async resolve => {
       await clearDb();
-      await users.createMany(['account', 'category', 'expense']);
+      await users.createMany(['account', 'category', 'expense', 'income']);
       accountCreated = await accounts.createOne();
       categoryCreated = await categories.createOne();
       resolve(done);
@@ -73,6 +73,24 @@ describe('# Testing mymoney API', () => {
               { name: 'description', defaultValue: 'Despesa 01', required: true },
               { name: 'date', defaultValue: Date.now(), required: true },
               { name: 'value', defaultValue: 15.30, required: true },
+              { name: 'paid', defaultValue: true },
+            ], tokens
+          );
+          restfulExpense.test();
+        })
+        .then(() => done())
+    });
+
+    it('Restful income routes', done => {
+      users.getTokens('income')
+        .then(tokens => {
+          const restfulExpense = new Restful(
+            { name: 'income', path: '/incomes' }, [
+              { name: 'account', defaultValue: accountCreated, required: true, relational: true },
+              { name: 'category', defaultValue: categoryCreated, required: true, relational: true },
+              { name: 'description', defaultValue: 'Receita 01', required: true },
+              { name: 'date', defaultValue: Date.now(), required: true },
+              { name: 'value', defaultValue: 5000, required: true },
               { name: 'paid', defaultValue: true },
             ], tokens
           );

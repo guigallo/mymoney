@@ -33,16 +33,8 @@ class Expense extends Transaction {
       })
     );
   }
-
-  /*
-  update() {
-    return new Promise((resolve, reject) => model
-      .findByIdAndUpdate
-    );
-  }
-  */
 }
 module.exports = Expense;
 
-const model = mongoose.model('Expense', Expense._getSchema())
-module.exports.Model = model
+const model = mongoose.model('Expense', Expense._getSchema());
+module.exports.Model = model;

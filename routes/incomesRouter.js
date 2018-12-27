@@ -1,8 +1,8 @@
 const route = require('../services/RouteFactory');
-const controller = require('../controllers/AccountController');
+const controller = require('../controllers/IncomeController');
 
 module.exports = app => 
   route(app, controller, {
-    path: '/accounts',
-    name: 'account'
+    path: '/incomes',
+    name: 'income'
   });
