@@ -8,6 +8,7 @@ const Restful = require('./routes/Restful');
 //const loginoutTest = require('./routes/loginoutTest');
 
 let accountCreated;
+let accountToTransfer;
 let categoryCreated;
 
 clearDb = () => 
@@ -24,8 +25,9 @@ describe('# Testing mymoney API', () => {
   before(done => {
     new Promise(async resolve => {
       await clearDb();
-      await users.createMany(['account', 'category', 'expense', 'income']);
+      await users.createMany(['account', 'category', 'expense', 'income', 'transfer']);
       accountCreated = await accounts.createOne();
+      accountToTransfer = await accounts.createOne();
       categoryCreated = await categories.createOne();
       resolve(done);
     }).then(() => done());
@@ -92,6 +94,22 @@ describe('# Testing mymoney API', () => {
               { name: 'date', defaultValue: Date.now(), required: true },
               { name: 'value', defaultValue: 5000, required: true },
               { name: 'paid', defaultValue: true },
+            ], tokens
+          );
+          restfulExpense.test();
+        })
+        .then(() => done())
+    });
+
+    it('Restful transfer routes', done => {
+      users.getTokens('transfer')
+        .then(tokens => {
+          const restfulExpense = new Restful(
+            { name: 'transfer', path: '/transfers' }, [
+              { name: 'accountOut', defaultValue: accountCreated, required: true, relational: true },
+              { name: 'accountIn', defaultValue: accountToTransfer, required: true, relational: true },
+              { name: 'date', defaultValue: Date.now(), required: true },
+              { name: 'value', defaultValue: 50, required: true },
             ], tokens
           );
           restfulExpense.test();

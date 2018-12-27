@@ -7,7 +7,7 @@ const expenseSchema = [
 
 class Income extends Trasaction {
   constructor(account, category, description, date, value, paid = false) {
-    super('out', account, category, description, date, value);
+    super('in', account, category, description, date, value);
     
     this.paid = paid;
   }

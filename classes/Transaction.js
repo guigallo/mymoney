@@ -35,7 +35,7 @@ class Transaction {
     return schema;
   }
 
-  save() {
+  create() {
     throw new Error('Funcion not implemented in children class');
   }
 }
