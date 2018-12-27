@@ -68,8 +68,8 @@ describe('# Testing mymoney API', () => {
         .then(tokens => {
           const restfulExpense = new Restful(
             { name: 'expense', path: '/expenses' }, [
-              { name: 'account', defaultValue: accountCreated, required: true },
-              { name: 'category', defaultValue: categoryCreated, required: true },
+              { name: 'account', defaultValue: accountCreated, required: true, relational: true },
+              { name: 'category', defaultValue: categoryCreated, required: true, relational: true },
               { name: 'description', defaultValue: 'Despesa 01', required: true },
               { name: 'date', defaultValue: Date.now(), required: true },
               { name: 'value', defaultValue: 15.30, required: true },

@@ -45,9 +45,17 @@ class Restful {
 
   //not obj
   _shouldHaveProperties(object, properties) {
-    properties.forEach(prop => 
-      object.should.have.property(prop.name).eql(prop.defaultValue)
-    );
+    properties.forEach(prop => {
+      if(prop.relational)
+        return object.should.have.property(prop.name).eql(prop.defaultValue._id.toString());
+
+      if(prop.name === 'date') {
+        const objDate = new Date(object[prop.name]);
+        const defDate = new Date(prop.defaultValue);
+        return objDate.should.be.eql(defDate);
+      }
+      object.should.have.property(prop.name).eql(prop.defaultValue);
+    });
   }
 
   //not obj
@@ -149,8 +157,16 @@ class Restful {
               this._shouldHasObj(res, 'result');
     
               const createdAccount = res.body.result[0];
-              this.properties.forEach(property => {
-                createdAccount.should.have.property(property.name).eql(property.defaultValue);
+              this.properties.forEach(prop => {
+                if(prop.relational)
+                  return createdAccount.should.have.property(prop.name).eql(prop.defaultValue._id.toString());
+          
+                if(prop.name === 'date') {
+                  const objDate = new Date(createdAccount[prop.name]);
+                  const defDate = new Date(prop.defaultValue);
+                  return objDate.should.be.eql(defDate);
+                }
+                createdAccount.should.have.property(prop.name).eql(prop.defaultValue);
               });
   
               done();
