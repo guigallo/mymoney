@@ -25,7 +25,7 @@ describe('# Testing mymoney API', () => {
   before(done => {
     new Promise(async resolve => {
       await clearDb();
-      await users.createMany(['account', 'category', 'expense', 'income', 'transfer']);
+      await users.createMany(['account', 'category', 'expense', 'income', 'transfer', 'creditcard']);
       accountCreated = await accounts.createOne();
       accountToTransfer = await accounts.createOne();
       categoryCreated = await categories.createOne();
@@ -110,6 +110,23 @@ describe('# Testing mymoney API', () => {
               { name: 'accountIn', defaultValue: accountToTransfer, required: true, relational: true },
               { name: 'date', defaultValue: Date.now(), required: true },
               { name: 'value', defaultValue: 50, required: true },
+            ], tokens
+          );
+          restfulExpense.test();
+        })
+        .then(() => done())
+    });
+
+    it('Restful credit card routes', done => {
+      users.getTokens('creditcard')
+        .then(tokens => {
+          const restfulExpense = new Restful(
+            { name: 'creditCard', path: '/creditcards' }, [
+              { name: 'name', defaultValue: 'visa', required: true },
+              { name: 'limit', defaultValue: 2400, required: true },
+              { name: 'closingDay', defaultValue: 7, required: true },
+              { name: 'dueDate', defaultValue: 15, required: true },
+              { name: 'account', defaultValue: accountCreated, required: true, relational: true },
             ], tokens
           );
           restfulExpense.test();
