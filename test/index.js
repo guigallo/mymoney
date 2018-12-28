@@ -1,15 +1,15 @@
 const users = require('./sample/userSample');
+const Restful = require('./routes/Restful');
+
 const accounts = require('./sample/accountSample');
 const categories = require('./sample/categorySample');
 const expenses = require('./sample/expenseSample');
-const Restful = require('./routes/Restful');
-//const accountTest = require('./routes/accountsTest');
-//const categoriesTest = require('./routes/categoriesTest');
-//const loginoutTest = require('./routes/loginoutTest');
+const creditCard = require('./sample/creditCardSample');
 
 let accountCreated;
 let accountToTransfer;
 let categoryCreated;
+let creditCardCreated;
 
 clearDb = () => 
   new Promise(async resolve => {
@@ -17,6 +17,7 @@ clearDb = () =>
     await accounts.clear();
     await categories.clear();
     await expenses.clear();
+    await creditCard.clear();
 
     resolve();
   })
@@ -29,6 +30,7 @@ describe('# Testing mymoney API', () => {
       accountCreated = await accounts.createOne();
       accountToTransfer = await accounts.createOne();
       categoryCreated = await categories.createOne();
+      creditCardCreated = await creditCard.createOne(accountCreated);
       resolve(done);
     }).then(() => done());
   });
