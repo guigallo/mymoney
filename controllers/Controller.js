@@ -1,6 +1,6 @@
 const validate = require('../middlewares/validateRequest');
 const logger = require('../services/logger');
-
+const PasswordUtil = require('../utils/PasswordsUtil');
 
 class Controller {
   
@@ -29,8 +29,10 @@ class Controller {
         model[property] = this.request.body[property]
     });
 
-    this.Model.create(model, (errors, created) => {
-      
+    if(this.name === 'User')
+      model.password = PasswordUtil.hashed(model.password);
+
+    this.Model.create(model, (errors, created) => {      
       if(errors) return this.response.status(500).json({ errors });
 
       this._log('created');
