@@ -6,7 +6,7 @@ function VerifyToken(req, res, next) {
   if(! token) return res.status(403).send({ auth: false, errors: 'Token not provided.'});
 
   jwt.verify(token, config.secret, function(err, decoded) {
-    if(err) return res.status(500).send({ auth: false, errors: 'Invalid token.' });
+    if(err) return res.status(401).send({ auth: false, errors: err.name });
 
     req.user = {
       id: decoded.id,
