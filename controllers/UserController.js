@@ -1,33 +1,30 @@
-const Controller = require('./Controller');
-const { check } = require('express-validator/check');
-const Model = require('../models/User');
-const CreateToken = require('../utils/CreateToken');
+const Controller = require('./Controller')
+const { check } = require('express-validator/check')
+const Model = require('../models/User')
+const CreateToken = require('../utils/CreateToken')
 
 class UserController extends Controller {
   constructor(req, res) {
-    super(req, res, 'User', Model, ['name', 'email', 'password']);
+    super(req, res, 'User', Model, ['name', 'email', 'password'])
   }
 
   create() {
-    super.create((res, created) => {
-      const token = CreateToken(created._id, created.permissions);
-      res.status(201).json({ auth: true, token });
-    });
+    super.create((res, created) => res.status(201).json({ auth: true, token: CreateToken(created._id, created.permissions) }))
   }
   
   read() {
     super.read(users => {
-      let usersFiltered = [];
+      let usersFiltered = []
       users.map(user => usersFiltered.push({
           id: user._id,
           name: user.name,
           email: user.email,
           permissions: user.permissions
         })
-      );
+      )
 
-      return this.response.status(200).json({ result: usersFiltered });
-    });
+      return this.response.status(200).json({ result: usersFiltered })
+    })
   }
 
   readById() {
@@ -37,7 +34,7 @@ class UserController extends Controller {
         name: user.name,
         email: user.email,
       })
-    );
+    )
   }
 
   update() {
@@ -45,7 +42,7 @@ class UserController extends Controller {
     if(body.hasOwnProperty('password') || body.hasOwnProperty('newPassword'))
       return this.response.status(400).json({ message: 'To change password, use the path "/user/newpassword"' })
 
-    super.update();
+    super.update()
   }
 }
 

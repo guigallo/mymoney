@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose')
 var UserSchema = new mongoose.Schema({
   name:         { type: String, required: true },
   email:        { type: String, required: true },
@@ -8,5 +8,5 @@ var UserSchema = new mongoose.Schema({
     'account:create', 'account:read', 'account:update', 'account:delete',
     'category:create', 'category:read', 'category:update', 'category:delete',
   ]}
-});
-module.exports = mongoose.model('User', UserSchema);
+})
+module.exports = mongoose.model('User', UserSchema)
